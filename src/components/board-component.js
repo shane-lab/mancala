@@ -7,6 +7,7 @@ import { PebbleComponent } from './pebble-component'
 import { Board } from '../models/board'
 
 import SIDES from '../shared/sides'
+import { bind } from '../util/bind';
 
 @Component({
     selector: 'board-component',
@@ -23,6 +24,7 @@ export class BoardComponent {
     laneComponentA: LaneComponent   // opponent lane
     laneComponentB: LaneComponent   // player lane
     pebbleComponents: PebbleComponent[] = []
+    renderPebbles = false
     constructor(board: Board) {
         this.board = board
     }

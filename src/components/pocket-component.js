@@ -19,6 +19,7 @@ export class PocketComponent {
         const pocketEl = elem.querySelector('.pocket')
 
         pocketEl.setAttribute('data-id', this.pocket.index)
+        pocketEl.setAttribute('data-score', this.pocket.score)
 
         bind(this.pocket, 'score', v => pocketEl.setAttribute('data-score', v))
     }

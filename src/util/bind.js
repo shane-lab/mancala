@@ -1,10 +1,9 @@
 /**
- * simple one-way binding to an arbitrary object and DOM node
- * @return {HTMLElement} Returns the node
+ * simple one-way binding to an arbitrary object
  */
-export const bind = (/*node: HTMLElement, */model: object, plucking: string, handler: (...args) => void) => {
-    let oldValue = model[plucking]
-    Object.defineProperty(model, plucking, {
+export const bind = (model: object, property: string, handler: (...args) => void) => {
+    let oldValue = model[property]
+    Object.defineProperty(model, property, {
         enumerable: true,
         configurable: true,
         set: function (value) {

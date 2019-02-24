@@ -13,7 +13,6 @@ const { EventBus } = LightEventBus
 export class SetupState extends State {
     #domInteractive = false
     #root: HTMLElement
-
     constructor(element: HTMLElement) {
         super()
         this.#root = element
@@ -29,6 +28,7 @@ export class SetupState extends State {
 
         transitionTo(
             IdleState,
+            board,
             (selector, handler) => subscribe(selector, handler),
             (selector, ...args) => publish(selector, ...args)
         )

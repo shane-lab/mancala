@@ -1,5 +1,5 @@
 import { Pocket } from './pocket'
-import { Pebble } from './pebble';
+import { Pebble } from './pebble'
 
 export const MAX_POCKETS = 14
 
@@ -16,8 +16,9 @@ export class Board {
         this.pebbles = []
 
         for (let i = 0; i < MAX_POCKETS; i++) {
-            const pocket = new Pocket(i, 0)
-            if (i !== STORE_A && i !== STORE_B) 
+            const isStore = i === STORE_A || i === STORE_B
+            const pocket = new Pocket(i, isStore ? 0 : BASE_SIZE)
+            if (!isStore) 
                 for (let j = 0; j < BASE_SIZE; j++) 
                     this.pebbles.push(new Pebble(pocket))
             this.pockets.push(pocket)

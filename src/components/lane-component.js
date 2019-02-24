@@ -41,6 +41,6 @@ export class LaneComponent {
         const laneEl = this.querySelector('.lane')
 
         for (let i = 0; i < this.pockets.length; i++)
-            this.pocketComponents.push(new PocketComponent(laneEl, this.pockets[i]))
+            this.pocketComponents.push(new PocketComponent(laneEl, this.pockets[this.side === SIDES.PLAYER ? i : 6 - (i + 1)]))
     }
 }

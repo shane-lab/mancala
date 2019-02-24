@@ -9,7 +9,12 @@ import { offset } from '../util/dom'
 
 const VARIANTS = ['red', 'green', 'blue', 'yellow']
 
-const dockPebble = (elem: HTMLElement, host: HTMLElement) => {
+const style = (x: number, y: number) => `translate3d(${x}px, ${y}px, 0)`
+
+const dock = (elem: HTMLElement, host: HTMLElement) => {
+    if (!host)
+        return
+    
     const topLeft = offset(host)
     const width = host.clientWidth
     const height = host.clientHeight
@@ -27,13 +32,9 @@ const dockPebble = (elem: HTMLElement, host: HTMLElement) => {
     elem.setAttribute('data-origin-x', originX)
     elem.setAttribute('data-origin-y', originY)
 
-    const style = `translate3d(${originX}px, ${originY}px, 0)`
-
     elem.onclick = host.onclick
 
-    elem.style.transform = style
-
-    return elem
+    elem.style.transform = style(originX, originY)
 }
 
 @Component({
@@ -57,15 +58,19 @@ export class PebbleComponent {
 
         const pebbleEl = elem.querySelector('.pebble')
         pebbleEl.classList.add(color)
+
+        pebbleEl.style.transform = style(window.innerWidth / 2 - 25, window.innerHeight / 2 - 25)
         
-        bind(this.pebble, 'host', v => dockPebble(pebbleEl, this.#findHostElement()))
+        bind(this.pebble, 'host', v => dock(pebbleEl, this.#findHostElement()))
+
+        window.addEventListener('resize', e => dock(pebbleEl, this.#findHostElement()))
     }
     
     onMounted(parent: HTMLElement, elem: HTMLElement) {
         const pebbleEl = this.querySelector('.pebble')
 
         // wait 1 tick 
-        setTimeout(() => dockPebble(pebbleEl, this.#findHostElement()), 1);
+        setTimeout(() => dock(pebbleEl, this.#findHostElement()), 1);
     }
 
     // dirty dom lookup
