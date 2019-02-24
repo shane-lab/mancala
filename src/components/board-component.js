@@ -1,11 +1,12 @@
-import { Board } from '../models/board'
+import { Component } from '../decorators/component'
 
 import { StoreComponent } from './store-component'
 import { LaneComponent } from './lane-component'
+import { PebbleComponent } from './pebble-component'
+
+import { Board } from '../models/board'
 
 import SIDES from '../shared/sides'
-
-import { Component } from '../decorators/component'
 
 @Component({
     selector: 'board-component',
@@ -17,19 +18,20 @@ import { Component } from '../decorators/component'
     `
 })
 export class BoardComponent {
-    storeA: StoreComponent // opponent store
-    storeB: StoreComponent // player store
-    laneA: LaneComponent // opponent lane
-    laneB: LaneComponent // opponent lane
+    storeComponentA: StoreComponent // opponent store
+    storeComponentB: StoreComponent // player store
+    laneComponentA: LaneComponent   // opponent lane
+    laneComponentB: LaneComponent   // player lane
+    pebbleComponents: PebbleComponent[] = []
     constructor(board: Board) {
-        this.board = board;
+        this.board = board
     }
     
     onMounted(parent: HTMLElement, elem: HTMLElement) {
         const boardEl = this.querySelector('.board')
             
-        this.storeA = new StoreComponent(boardEl, SIDES.OPPONENT, this.board.storeA)
-        this.storeB = new StoreComponent(boardEl, SIDES.PLAYER, this.board.storeB)
+        this.storeComponentA = new StoreComponent(boardEl, SIDES.OPPONENT, this.board.storeA)
+        this.storeComponentB = new StoreComponent(boardEl, SIDES.PLAYER, this.board.storeB)
 
         const gridEl = document.createElement('div')
         gridEl.className = 'grid'
@@ -39,7 +41,10 @@ export class BoardComponent {
         const length = this.board.pockets.length
         const center = length / 2
 
-        this.laneA = new LaneComponent(gridEl, SIDES.OPPONENT, this.board.pockets.slice(0, center - 1))
-        this.laneB = new LaneComponent(gridEl, SIDES.PLAYER, this.board.pockets.slice(center, length - 1))
+        this.laneComponentA = new LaneComponent(gridEl, SIDES.OPPONENT, this.board.pockets.slice(0, center - 1))
+        this.laneComponentB = new LaneComponent(gridEl, SIDES.PLAYER, this.board.pockets.slice(center, length - 1))
+
+        for (let i = 0; i < this.board.pebbles.length; i++)
+            this.pebbleComponents.push(new PebbleComponent(elem, this.board.pebbles[i]))
     }
 }

@@ -79,7 +79,7 @@ body {
     top: -34px;
 }
 
-.pebbles-container .pebble {
+.pebble {
     position: fixed;
     top: 0;
     left: 0;
@@ -91,7 +91,7 @@ body {
     --pebble-shadow-color: #333;
     box-shadow: 0px 2px 2px var(--pebble-shadow-color);
 
-    transition: translate ease-in 1s;
+    transition: transform ease-in 1s;
 }
 
 .pebble.red {

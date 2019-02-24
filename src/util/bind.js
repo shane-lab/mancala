@@ -8,11 +8,11 @@ export const bind = (/*node: HTMLElement, */model: object, plucking: string, han
         enumerable: true,
         configurable: true,
         set: function (value) {
-            oldValue = value;
+            oldValue = value
             handler(value)
         },
         get: function () {
-            return oldValue;
+            return oldValue
         }
     })
 }

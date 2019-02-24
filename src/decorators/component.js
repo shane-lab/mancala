@@ -9,6 +9,7 @@ type ComponentDetails = {
 export const Component = (details: ComponentDetails) => {
     const { selector, template, style } = details
     return function (target) {
+        target.componentClass = target
         return class extends target {
             constructor(rootNode: HTMLElement | BaseComponent, ...args) {
                 super(...args)
@@ -41,6 +42,12 @@ export const Component = (details: ComponentDetails) => {
                     // shadow.appendChild(content.cloneNode(true))
                     // // console.log(!!document.querySelector(selector).createShadowRoot)
                 })
+                // .then(() => {
+                //     if (this.rootNode instanceof HTMLElement)
+                //         return
+                    
+                //     console.log(this.rootNode)
+                // })
             }
 
             async appendChild(elem: HTMLElement) {

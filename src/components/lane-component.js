@@ -22,6 +22,7 @@ import { bind } from '../util/bind'
     `
 })
 export class LaneComponent {
+    pocketComponents: PocketComponent[] = []
     /// side = either PLAYER or OPPONENT side
     constructor(side: Symbol, pockets: Pocket[]) {
         if (!hasValueOf(SIDES, side))
@@ -40,6 +41,6 @@ export class LaneComponent {
         const laneEl = this.querySelector('.lane')
 
         for (let i = 0; i < this.pockets.length; i++)
-            new PocketComponent(laneEl, this.pockets[i])
+            this.pocketComponents.push(new PocketComponent(laneEl, this.pockets[i]))
     }
 }

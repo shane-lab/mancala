@@ -1,4 +1,5 @@
 import { Pocket } from './pocket'
+import { Pebble } from './pebble';
 
 export const MAX_POCKETS = 14
 
@@ -9,11 +10,18 @@ export const BASE_SIZE = 4
 
 export class Board {
     pockets: Pocket[]
+    pebbles: Pebble[]
     constructor() {
         this.pockets = []
+        this.pebbles = []
 
-        for (let i = 0; i < MAX_POCKETS; i++)
-            this.pockets.push(new Pocket(i, 0))
+        for (let i = 0; i < MAX_POCKETS; i++) {
+            const pocket = new Pocket(i, 0)
+            if (i !== STORE_A && i !== STORE_B) 
+                for (let j = 0; j < BASE_SIZE; j++) 
+                    this.pebbles.push(new Pebble(pocket))
+            this.pockets.push(pocket)
+        }
     }
 
     get storeA(): Pocket {

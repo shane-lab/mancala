@@ -7,7 +7,6 @@ import { IdleState } from './idle-state'
 import { Board } from '../models/board'
 
 import { BoardComponent } from '../components/board-component'
-import { bind } from '../util/bind';
 
 const { EventBus } = LightEventBus
 
