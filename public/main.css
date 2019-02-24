@@ -2,3 +2,148 @@
     margin: 0;
     padding: 0;
 }
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: #2f2012;
+}
+
+body {
+    background: url('images/background.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+.board-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.board-wrapper .board {
+    background-color: #b79862;
+    position: relative;
+    border-radius: 50px;
+    width: 1600px;
+    height: 600px;
+    margin: 0 auto;
+    top: 80px;
+    box-shadow: 0px 3px 24px 10px #0e0e0ea6;
+    background-image: url('images/board.jpg');
+}
+
+.board-wrapper .board .grid {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+}
+
+.grid .lane {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.grid .lane .pocket {
+    display: flex;
+    width: 160px;
+    height: 160px;
+    margin: 15px;
+    border-radius: 50%;
+    background: rgb(149, 116, 66);
+    box-shadow: 0px -2px 0px #9a814f;
+    border: 1px solid #675329;
+    opacity: 0.9;
+}
+.grid .lane .pocket::after {
+    content: attr(data-score);
+    position: relative;
+    font-size: 32px;
+    line-height: 32px;
+    font-family: monospace;
+    left: calc(50% - 12px);
+}
+.grid .lane.opponent .pocket::after {
+    top: 162px;
+}
+.grid .lane.player .pocket::after {
+    top: -34px;
+}
+
+.pebbles-container .pebble {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 50px;
+    height: 50px;
+    background: #656565;
+    border-radius: 50%;
+    box-shadow: 0px 2px 2px #333;
+    --pebble-shadow-color: #333;
+    box-shadow: 0px 2px 2px var(--pebble-shadow-color);
+
+    transition: translate ease-in 1s;
+}
+
+.pebble.red {
+    background-color: #ce234b;
+    --pebble-shadow-color: #6c2435;
+}
+.pebble.green {
+    background-color: #6cbb49;
+    --pebble-shadow-color: #37522b;
+}
+.pebble.blue {
+    background-color: #576bbb;
+    --pebble-shadow-color: #3f455d;
+}
+.pebble.yellow {
+    background-color: #deb33c;
+    --pebble-shadow-color: #7a611d;
+}
+
+.board-wrapper .board .store-wrapper {
+    position: absolute;
+    height: 100%;
+    width: 232px;
+}
+.store-wrapper.opponent {
+    left: 0;
+}
+.store-wrapper.player {
+    right: 0;
+}
+
+.store-wrapper .store {
+    width: 180px;
+    height: 440px;
+    background: #8f703f;
+    display: block;
+    margin: 0 auto;
+    position: relative;
+    top: 80px;
+    box-shadow: 0px -2px 0px #896e40;
+    border-radius: 50px;
+    border: 2px solid #745f33;
+    opacity: 0.9;
+}
+.store::after {
+    content: attr(data-score);
+    position: relative;
+    font-size: 32px;
+    line-height: 32px;
+    font-family: monospace;
+    left: calc(50% - 12px);
+}
+.store-wrapper.opponent .store::after {
+    top: 408px;
+}

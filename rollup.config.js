@@ -1,5 +1,6 @@
 const babel = require('rollup-plugin-babel')
 const commonjs = require('rollup-plugin-commonjs')
+const resolve = require('rollup-plugin-node-resolve')
 
 const { main, dependencies } = require('./package.json')
 
@@ -12,14 +13,15 @@ module.exports = {
         format: 'cjs',
         sourceMap: true
     }],
-    external: [
-        '@babel/runtime-corejs2/regenerator',
-        '@babel/runtime-corejs2/core-js/promise',
-        '@babel/runtime-corejs2/helpers/asyncToGenerator',
-        '@babel/runtime-corejs2/helpers/defineProperty',
-        ...Object.keys(dependencies)
-    ],
+    // external: [
+    //     '@babel/runtime-corejs2/regenerator',
+    //     '@babel/runtime-corejs2/core-js/promise',
+    //     '@babel/runtime-corejs2/helpers/asyncToGenerator',
+    //     '@babel/runtime-corejs2/helpers/defineProperty',
+    //     ...Object.keys(dependencies)
+    // ],
     plugins: [
+        resolve(),
         babel({
             exclude: 'node_modules/**',
             externalHelpers: true,
