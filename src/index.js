@@ -1,0 +1,1 @@
+const appEl = document.getElementById('app')
