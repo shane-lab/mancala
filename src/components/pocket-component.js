@@ -11,8 +11,9 @@ import { bind } from '../util/bind'
     `
 })
 export class PocketComponent {
-    constructor(pocket: Pocket) {
+    constructor(pocket: Pocket, clickHandler: (x: Pocket) => void) {
         this.pocket = pocket
+        this.clickHandler = clickHandler
     }
 
     onCreate(elem: HTMLElement) {
@@ -22,5 +23,10 @@ export class PocketComponent {
         pocketEl.setAttribute('data-score', this.pocket.score)
 
         bind(this.pocket, 'score', v => pocketEl.setAttribute('data-score', v))
+    }
+
+    onMounted(parent: HTMLElement, elem: HTMLElement) {
+        const pocketEl = elem.querySelector('.pocket')
+        pocketEl.onclick = e => this.clickHandler(this.pocket)
     }
 }

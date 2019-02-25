@@ -9,9 +9,8 @@ export const Inject = (typeFunction?: IInjectable, ...data: any[]) => {
     return function (target: DecoratedTarget, propertyName: string, descriptor: PropertyDescriptor & { initializer?: any }) {
         typeFunction = typeFunction || Injector.getType(target, propertyName)
 
-        if (!typeFunction) {
+        if (!typeFunction) 
             throw new Error(`No type was specified for decorated class member '${propertyName}' in [${target.constructor.name}]`)
-        }
 
         let value = null;
 
@@ -23,9 +22,8 @@ export const Inject = (typeFunction?: IInjectable, ...data: any[]) => {
 
                 provider = Object.assign(new typeFunction(...data), provider)
 
-                if (!data) {
+                if (!data) 
                     Injector.setProvider(typeFunction, provider)
-                }
             }
 
             value = target[propertyName] = provider
@@ -59,9 +57,8 @@ export const Injectable = (predicate?: (target) => void) => {
         const provider = target
 
         provider.injectable = true;
-        if (predicate && typeof predicate === 'function') {
+        if (predicate && typeof predicate === 'function') 
             provider.predicate = predicate
-        }
 
         Injector.setProviderType(provider)
     }

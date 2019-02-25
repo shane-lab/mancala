@@ -6,6 +6,7 @@ import { STORE_A, STORE_B } from '../models/board'
 import { shuffle, between } from '../util/minidash'
 import { bind } from '../util/bind'
 import { offset } from '../util/dom'
+import { Check } from '../decorators/check';
 
 const VARIANTS = ['red', 'green', 'blue', 'yellow']
 
@@ -13,7 +14,9 @@ const style = (x: number, y: number) => `translate3d(${x}px, ${y}px, 0)`
 
 const dock = (elem: HTMLElement, host: HTMLElement) => {
     if (!host)
-        return
+        return elem.style.display = 'none'
+    
+    elem.style.display = 'block'
     
     const topLeft = offset(host)
     const width = host.clientWidth
@@ -61,20 +64,23 @@ export class PebbleComponent {
 
         pebbleEl.style.transform = style(window.innerWidth / 2 - 25, window.innerHeight / 2 - 25)
         
-        bind(this.pebble, 'host', v => dock(pebbleEl, this.#findHostElement()))
+        bind(this.pebble, 'host', v => dock(pebbleEl, this._findHostElement()))
 
-        window.addEventListener('resize', e => dock(pebbleEl, this.#findHostElement()))
+        window.addEventListener('resize', e => dock(pebbleEl, this._findHostElement()))
+
+        dock(pebbleEl, this._findHostElement())
     }
     
     onMounted(parent: HTMLElement, elem: HTMLElement) {
         const pebbleEl = this.querySelector('.pebble')
 
         // wait 1 tick 
-        setTimeout(() => dock(pebbleEl, this.#findHostElement()), 1);
+        setTimeout(() => dock(pebbleEl, this._findHostElement()), 1);
     }
 
     // dirty dom lookup
-    #findHostElement() {
+    @Check((self: PebbleComponent) => !!self.pebble.host, true)
+    _findHostElement() {
         let selector = `pocket-component > .pocket[data-id="${this.pebble.host.index}"]`
         if (this.id === STORE_A || this.id === STORE_B)
             selector = `store-component > ${'.'.concat(this.id === STORE_A ? 'opponent' : 'player')} > .store`

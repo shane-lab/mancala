@@ -24,11 +24,12 @@ import { bind } from '../util/bind'
 export class LaneComponent {
     pocketComponents: PocketComponent[] = []
     /// side = either PLAYER or OPPONENT side
-    constructor(side: Symbol, pockets: Pocket[]) {
+    constructor(side: Symbol, pockets: Pocket[], clickHandler: (x: Pocket) => void) {
         if (!hasValueOf(SIDES, side))
             throw new Error('the given side is not a valid player side')
         this.side = side
         this.pockets = pockets
+        this.clickHandler = clickHandler
     }
 
     onCreate(elem: HTMLElement) {
@@ -41,6 +42,6 @@ export class LaneComponent {
         const laneEl = this.querySelector('.lane')
 
         for (let i = 0; i < this.pockets.length; i++)
-            this.pocketComponents.push(new PocketComponent(laneEl, this.pockets[this.side === SIDES.PLAYER ? i : 6 - (i + 1)]))
+            this.pocketComponents.push(new PocketComponent(laneEl, this.pockets[this.side === SIDES.PLAYER ? i : 6 - (i + 1)], this.clickHandler))
     }
 }

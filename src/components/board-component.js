@@ -5,9 +5,9 @@ import { LaneComponent } from './lane-component'
 import { PebbleComponent } from './pebble-component'
 
 import { Board } from '../models/board'
+import { Pocket } from '../models/pocket'
 
 import SIDES from '../shared/sides'
-import { bind } from '../util/bind';
 
 @Component({
     selector: 'board-component',
@@ -25,8 +25,9 @@ export class BoardComponent {
     laneComponentB: LaneComponent   // player lane
     pebbleComponents: PebbleComponent[] = []
     renderPebbles = false
-    constructor(board: Board) {
+    constructor(board: Board, clickHandler: (x: Pocket) => void) {
         this.board = board
+        this.clickHandler = clickHandler
     }
     
     onMounted(parent: HTMLElement, elem: HTMLElement) {
@@ -43,8 +44,8 @@ export class BoardComponent {
         const length = this.board.pockets.length
         const center = length / 2
 
-        this.laneComponentA = new LaneComponent(gridEl, SIDES.OPPONENT, this.board.pockets.slice(0, center - 1))
-        this.laneComponentB = new LaneComponent(gridEl, SIDES.PLAYER, this.board.pockets.slice(center, length - 1))
+        this.laneComponentA = new LaneComponent(gridEl, SIDES.OPPONENT, this.board.pockets.slice(0, center - 1), this.clickHandler)
+        this.laneComponentB = new LaneComponent(gridEl, SIDES.PLAYER, this.board.pockets.slice(center, length - 1), this.clickHandler)
 
         for (let i = 0; i < this.board.pebbles.length; i++)
             this.pebbleComponents.push(new PebbleComponent(elem, this.board.pebbles[i]))
