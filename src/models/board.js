@@ -6,7 +6,7 @@ export const MAX_POCKETS = 14
 export const STORE_A = MAX_POCKETS / 2 - 1
 export const STORE_B = MAX_POCKETS - 1
 
-export const BASE_SIZE = 4
+export const BASE_SIZE = 1
 
 export class Board {
     pockets: Pocket[]

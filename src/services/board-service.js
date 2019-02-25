@@ -5,8 +5,10 @@ import SIDES from '../shared/sides'
 import { Check } from '../decorators/check'
 import { Injectable } from '../decorators/injector'
 
+import { hasValueOf } from '../util/minidash'
 import bimap from '../util/bimap'
 
+const validLane = (side: Symbol) => hasValueOf(SIDES, side)
 const validPocket = (id: number) => id >= 0 && id < MAX_POCKETS
 const isStorePocket = (id: number) => [STORE_A, STORE_B].indexOf(id) !== -1
 
@@ -34,9 +36,20 @@ export class BoardService {
         return board.pebbles.filter(x => x.host.index === id)
     }
 
+    @Check((board: Board, side: Symbol) => validLane(side))
+    getPocketsByLane(board: Board, side: Symbol) {
+        const flag = side === SIDES.OPPONENT ? false : true
+        return board.pockets.filter(x => flag ? x.index > STORE_A && x.index < STORE_B : x.index < STORE_A)
+    }
+
     @Check((id: number) => validPocket(id))
-    getLaneByPocket(id: number): Symbol {
+    getLaneByPocket(id: number) {
         return id <= STORE_A ? SIDES.OPPONENT : SIDES.PLAYER
+    }
+
+    @Check((board: Board, side: Symbol) => validLane(side))
+    getStoreByLane(board: Board, side: Symbol) {
+        return this.fetch(board, side === SIDES.OPPONENT ? STORE_A : STORE_B)
     }
 
     // @Check((board: Board, id: number) => validPocket(id) && !isStorePocket(id))
@@ -88,13 +101,27 @@ export class BoardService {
         return lastId
     }
 
+    @Check((board: Board, from: number, to: number) => validPocket(from) && validPocket(to))
+    transferAll(board: Board, from: number, to: number) {
+        const pebbles = this.getPebblesByPocket(board, from)
+
+        const a = this.fetch(board, from)
+        const b = this.fetch(board, to)
+
+        for (let i = 0; i < pebbles.length; i++)
+            pebbles[i].host = b
+
+        b.score += a.score
+        a.score = 0
+    }
+
     @Check((from: number) => validPocket(from) && !isStorePocket(from))
     oppositePockedId(from: number) {
         const side = this.getLaneByPocket(from)
         if (side === SIDES.PLAYER)
-            return mapping.inverse[from]
+            return +mapping.inverse[from]
         
-        return mapping.map[from]
+        return +mapping.map[from]
     }
 
     @Check((from: number) => validPocket(from))

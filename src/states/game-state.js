@@ -20,6 +20,7 @@ export class GameState extends BaseState {
     #mode: Symbol
     #match: Match
     #subscription: Subscription
+    #moving = false
 
     @Inject(BoardService)
     boardService: BoardService
@@ -43,17 +44,27 @@ export class GameState extends BaseState {
 
         this.matchService.start(this.#match)
 
-        this.#subscription = this.subscriber(STATES.POCKET_SELECT, (pocketId: number) => {
+        this.#subscription = this.subscriber(STATES.POCKET_SELECT, async (pocketId: number) => {
+            if (this.#moving)
+                return
+            
+            this.#moving = true
+
             const side = this.boardService.getLaneByPocket(pocketId)
 
             let move = MOVES.ILLEGAL
             try {
-                move = this.matchService.move(this.#match, side, pocketId)
+                move = await this.matchService.move(this.#match, side, pocketId)
             } catch(e) {
                 console.log(e)
             }
 
-            console.log(move)
+            let victor
+            if (victor = this.matchService.getVictor(this.#match)) {
+                // TODO broadcast victor
+            }
+
+            this.#moving = false
         })
     }
     
