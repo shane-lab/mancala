@@ -14,8 +14,8 @@ type PlayerIndicatorComponentDetails = {
     selector: 'player-indicator-component',
     template: `
         <div class="player-indicator">
-            <div class="avatar player" title="Player">P1</div>
-            <div class="avatar opponent" title="Opponent">P2</div>
+            <div class="avatar player" title="Player">bottom</div>
+            <div class="avatar opponent" title="Opponent">top</div>
         </div>
     `,
     style: `
