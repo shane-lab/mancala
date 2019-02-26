@@ -57,7 +57,7 @@ export class PebbleComponent {
         let id
         try {
             id = this.#pebble.host.index
-        } catch (e) { console.log(e) }
+        } catch (e) { }
 
         return id
     }

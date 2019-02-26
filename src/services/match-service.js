@@ -98,7 +98,7 @@ export class MatchService {
         if (!this.isBoardCleared(match))
             return null
 
-        return match.board.storeB > match.board.storeA ? SIDES.PLAYER : SIDES.OPPONENT
+        return match.board.storeB.score > match.board.storeA.score ? SIDES.PLAYER : SIDES.OPPONENT
     }
 
     #transferLaneToVictor(match: Match, side: Symbol) {
