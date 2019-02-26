@@ -35,7 +35,6 @@ export class IdleState extends BaseState {
                 this.#board,
                 mode,
                 this.subscriber,
-                this.subscriber,
                 this.publisher
             )
         })

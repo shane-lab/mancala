@@ -1,4 +1,5 @@
 import { BaseState } from './base-state'
+import { IdleState } from './idle-state'
 
 import { BoardService } from '../services/board-service'
 import { MatchService } from '../services/match-service'
@@ -42,7 +43,9 @@ export class GameState extends BaseState {
     async onEnter(transitionTo) {
         console.log(`playing game in mode ${this.#mode.description}`)
 
-        this.matchService.start(this.#match)
+        this.matchService.start(this.#match, SIDES.PLAYER)
+        
+        this.publisher(STATES.SWITCH_TURN, this.#match.turn)
 
         this.#subscription = this.subscriber(STATES.POCKET_SELECT, async (pocketId: number) => {
             if (this.#moving)
@@ -55,13 +58,23 @@ export class GameState extends BaseState {
             let move = MOVES.ILLEGAL
             try {
                 move = await this.matchService.move(this.#match, side, pocketId)
-            } catch(e) {
-                console.log(e)
-            }
+            } catch(e) { }
 
             let victor
             if (victor = this.matchService.getVictor(this.#match)) {
-                // TODO broadcast victor
+
+                transitionTo(
+                    IdleState,
+                    this.#match.board,
+                    this.subscriber,
+                    this.publisher
+                )
+
+                this.publisher(STATES.VICTOR, victor)
+            }
+            else {
+                if (this.#match.turn !== side) 
+                    this.publisher(STATES.SWITCH_TURN, this.#match.turn)
             }
 
             this.#moving = false
