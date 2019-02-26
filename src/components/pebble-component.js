@@ -1,4 +1,5 @@
 import { Component } from '../decorators/component'
+import { Check } from '../decorators/check';
 
 import { Pebble } from '../models/pebble'
 import { STORE_A, STORE_B } from '../models/board'
@@ -6,7 +7,6 @@ import { STORE_A, STORE_B } from '../models/board'
 import { shuffle, between } from '../util/minidash'
 import { bind } from '../util/bind'
 import { offset } from '../util/dom'
-import { Check } from '../decorators/check';
 
 const VARIANTS = ['red', 'green', 'blue', 'yellow']
 
@@ -48,12 +48,18 @@ const dock = (elem: HTMLElement, host: HTMLElement) => {
     `
 })
 export class PebbleComponent {
+    #pebble: Pebble
     constructor(pebble: Pebble) {
-        this.pebble = pebble
+        this.#pebble = pebble
     }
 
     get id() {
-        return this.pebble.host.index
+        let id
+        try {
+            id = this.#pebble.host.index
+        } catch (e) { console.log(e) }
+
+        return id
     }
 
     onCreate(elem: HTMLElement) {
@@ -64,7 +70,7 @@ export class PebbleComponent {
 
         pebbleEl.style.transform = style(window.innerWidth / 2 - 25, window.innerHeight / 2 - 25)
         
-        bind(this.pebble, 'host', v => dock(pebbleEl, this._findHostElement()))
+        bind(this.#pebble, 'host', v => dock(pebbleEl, this._findHostElement()))
 
         window.addEventListener('resize', e => dock(pebbleEl, this._findHostElement()))
 
@@ -79,9 +85,9 @@ export class PebbleComponent {
     }
 
     // dirty dom lookup
-    @Check((self: PebbleComponent) => !!self.pebble.host, true)
+    @Check((self: PebbleComponent) => self.id !== undefined, true)
     _findHostElement() {
-        let selector = `pocket-component > .pocket[data-id="${this.pebble.host.index}"]`
+        let selector = `pocket-component > .pocket[data-id="${this.id}"]`
         if (this.id === STORE_A || this.id === STORE_B)
             selector = `store-component > ${'.'.concat(this.id === STORE_A ? 'opponent' : 'player')} > .store`
         return document.querySelector(selector)

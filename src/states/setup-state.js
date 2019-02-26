@@ -17,6 +17,7 @@ import { Inject } from '../decorators/injector';
 import { ToastService, ToastPosition } from '../services/toast-service';
 import { PlayerIndicatorComponent } from '../components/player-indicator-component';
 import delay from '../util/delay';
+import MOVES from '../shared/moves';
 
 const { EventBus } = LightEventBus
 
@@ -80,13 +81,20 @@ export class SetupState extends State {
             ++turns
         })
         subscribe(STATES.VICTOR, async (side: Symbol) => {
-            this.toastService.info(`${side === SIDES.PLAYER ? 'Bottom': 'Top'} player has won the game`, 'Game ended', {
-                position: ToastPosition.TopCenter
+            this.toastService.success(`${side === SIDES.PLAYER ? 'Bottom': 'Top'} player has won the game`, 'Game ended', {
+                position: ToastPosition.TopCenter,
+                closeInterval: 2500
             })
 
             await delay(1000)
 
             modalDetails.shown = true
+        })
+        subscribe(STATES.POCKET_SELECTED, (move: Symbol) => {
+            if (move === MOVES.ILLEGAL || move === MOVES.WAITING)
+                this.toastService.warning('You can not select this pocket', 'Wrong pocket', {
+                    position: ToastPosition.BottomCenter
+                })
         })
 
         transitionTo(

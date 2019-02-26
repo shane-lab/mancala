@@ -40,29 +40,30 @@ const insertHTML = (elem: HTMLElement, v: HTMLElement | string) => {
     `
 })
 export class ModalComponent {
-    constructor(modalDetails: ModalComponentDetails) {
-        this.modalDetails = modalDetails
+    #details: ModalComponentDetails
+    constructor(details: ModalComponentDetails) {
+        this.#details = details
     }
     
     onCreate(elem: HTMLElement) {
         const titleEl = elem.querySelector('.title')
-        titleEl.innerText = this.modalDetails.title
+        titleEl.innerText = this.#details.title
         const messageEl = elem.querySelector('.message')
-        messageEl.innerText = this.modalDetails.message
+        messageEl.innerText = this.#details.message
         const templateEl = elem.querySelector('.slot')
-        if (this.modalDetails.shown === false)
+        if (this.#details.shown === false)
             elem.style.display = 'none'
 
         const initialDisplay = elem.style.display || 'block'
         
-        bind(this.modalDetails, 'title', v => titleEl.innerText = v)
-        bind(this.modalDetails, 'message', v => messageEl.innerText = v)
-        bind(this.modalDetails, 'shown', v => elem.style.display = v ? initialDisplay : 'none')
+        bind(this.#details, 'title', v => titleEl.innerText = v)
+        bind(this.#details, 'message', v => messageEl.innerText = v)
+        bind(this.#details, 'shown', v => elem.style.display = v ? initialDisplay : 'none')
 
-        if ('template' in this.modalDetails) {
-            insertHTML(templateEl, this.modalDetails.template)
+        if ('template' in this.#details) {
+            insertHTML(templateEl, this.#details.template)
 
-            bind(this.modalDetails, 'template', v => insertHTML(templateEl, v))
+            bind(this.#details, 'template', v => insertHTML(templateEl, v))
         }
     }
 }

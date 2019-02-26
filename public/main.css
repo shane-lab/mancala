@@ -203,14 +203,20 @@ body {
 
 .player-indicator {    
     display: flex;
-    -webkit-transform: translate3d(0, 0, 0);
-    position: absolute;
+    top: 40px;
+    position: relative;
+    padding: 4px 0px;
+    width: 400px;
+    margin: 0 auto;
+    font: normal 30px/60px 'Rye';
+    text-align: center;
+    color: #3b2a1d;
+    background: #947342;
+    border-radius: 4px;
+    box-shadow: 0px 1px 2px #896e40;
+    border: 1px solid #745f33;
     overflow: visible;
     pointer-events: none;
-    left: 56px;
-    right: 56px;
-    /* top: 18px; */
-    bottom: 120px;
     justify-content: center;
     align-items: center;
 }
@@ -219,7 +225,6 @@ body {
     display: block;
     width: 78px;
     min-height: 78px;
-    margin-right: 18px;
     position: relative;
     background: #979291;
     border-radius: 50%;
@@ -233,7 +238,13 @@ body {
     font-size: xx-large;
 }
 .player-indicator .avatar.active {
-  background: #30d1c2
+  background: #fbd388
+}
+.player-indicator .avatar.player {
+  margin-right: 18px
+}
+.player-indicator .avatar.opponent {
+  margin-left: 18px
 }
 
 .toast button.close {

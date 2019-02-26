@@ -11,22 +11,24 @@ import { bind } from '../util/bind'
     `
 })
 export class PocketComponent {
+    #pocket: Pocket
+    #clickHandler: (x: Pocket) => void
     constructor(pocket: Pocket, clickHandler: (x: Pocket) => void) {
-        this.pocket = pocket
-        this.clickHandler = clickHandler
+        this.#pocket = pocket
+        this.#clickHandler = clickHandler
     }
 
     onCreate(elem: HTMLElement) {
         const pocketEl = elem.querySelector('.pocket')
 
-        pocketEl.setAttribute('data-id', this.pocket.index)
-        pocketEl.setAttribute('data-score', this.pocket.score)
+        pocketEl.setAttribute('data-id', this.#pocket.index)
+        pocketEl.setAttribute('data-score', this.#pocket.score)
 
-        bind(this.pocket, 'score', v => pocketEl.setAttribute('data-score', v))
+        bind(this.#pocket, 'score', v => pocketEl.setAttribute('data-score', v))
     }
 
     onMounted(parent: HTMLElement, elem: HTMLElement) {
         const pocketEl = elem.querySelector('.pocket')
-        pocketEl.onclick = e => this.clickHandler(this.pocket)
+        pocketEl.onclick = e => this.#clickHandler(this.#pocket)
     }
 }

@@ -58,8 +58,11 @@ export class GameState extends BaseState {
             let move = MOVES.ILLEGAL
             try {
                 move = await this.matchService.move(this.#match, side, pocketId)
+
             } catch(e) { }
 
+            this.publisher(STATES.POCKET_SELECTED, move)
+            
             let victor
             if (victor = this.matchService.getVictor(this.#match)) {
 

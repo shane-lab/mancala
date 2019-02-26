@@ -17,6 +17,16 @@ type PlayerIndicatorComponentDetails = {
             <div class="avatar player" title="Player">P1</div>
             <div class="avatar opponent" title="Opponent">P2</div>
         </div>
+    `,
+    style: `
+        :root {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
     `
 })
 export class PlayerIndicatorComponent {
@@ -26,22 +36,14 @@ export class PlayerIndicatorComponent {
     }
 
     onCreate(elem: HTMLElement) {
-        const indicatorEl = elem.querySelector('.player-indicator')
-        indicatorEl.style.display = 'none'
-
         const playerEl = elem.querySelector('.player')
         const opponentEl = elem.querySelector('.opponent')
 
         bind(this.#details, 'turn', v => {
-            if (!hasValueOf(SIDES, v))
-                return indicatorEl.style.display = 'none'
-
             if (v === SIDES.PLAYER) 
                 this.#setActive(playerEl, opponentEl)
             else 
                 this.#setActive(opponentEl, playerEl)
-            
-            indicatorEl.style.display = 'flex'
         })
     }
 
