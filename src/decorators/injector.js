@@ -12,9 +12,9 @@ export const Inject = (typeFunction?: IInjectable, ...data: any[]) => {
         if (!typeFunction) 
             throw new Error(`No type was specified for decorated class member '${propertyName}' in [${target.constructor.name}]`)
 
-        let value = null;
+        let value = null
 
-        let provider = Injector.getProvider(typeFunction);
+        let provider = Injector.getProvider(typeFunction)
         if (provider && typeFunction.prototype !== Object.getPrototypeOf(provider)) {
             if (typeFunction.prototype !== Object.getPrototypeOf(provider)) {
                 // remove undefined fields in base class
@@ -56,7 +56,7 @@ export const Injectable = (predicate?: (target) => void) => {
     return function (target: DecoratedTarget) {
         const provider = target
 
-        provider.injectable = true;
+        provider.injectable = true
         if (predicate && typeof predicate === 'function') 
             provider.predicate = predicate
 

@@ -77,7 +77,7 @@ export class ToastService {
             message,
             title,
             closeCb: e => this.#remove(hostEl)
-        });
+        })
 
         const toastComponent = new ToastComponent(hostEl, details)
 

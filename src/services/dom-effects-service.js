@@ -26,7 +26,7 @@ const animate = (options) => {
             progress = 1
         options.progress = progress
         const delta = options.delta(progress)
-        options.step(delta);
+        options.step(delta)
         if (progress === 1) {
             clearInterval(id)
             options.complete()
@@ -37,7 +37,7 @@ const animate = (options) => {
 @Injectable()
 export class DomEffectsService {
     fadeIn(element: HTMLElement, options) {
-        const to = 0;
+        const to = 0
         animate({
             duration: options.duration,
             delta: function (progress) {
@@ -46,11 +46,11 @@ export class DomEffectsService {
             },
             complete: options.complete,
             step: (delta) => (element.style.opacity = to + delta)
-        });
+        })
     }
 
     fadeOut(element: HTMLElement, options) {
-        const to = 0.8;
+        const to = 0.8
         animate({
             duration: options.duration,
             delta: function (progress) {

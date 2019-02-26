@@ -71,7 +71,7 @@ export class BoardService {
      */
     @Check((board: Board, from: number) => validPocket(from) && !isStorePocket(from))
     transfer(board: Board, from: number) {
-        const pocketIds = [];
+        const pocketIds = []
 
         const pocket = this.fetch(board, from)
 
@@ -81,7 +81,7 @@ export class BoardService {
         
         pocket.score = 0
 
-        let j = 0;
+        let j = 0
         const wrap = (): number => {
             const next = this._wrapPocketId(from, ++j)
             const sameLane = this.sameLane(from, next)
@@ -95,7 +95,10 @@ export class BoardService {
         for (let i = 0; i < score; i++) {
             const pocket = board.pockets[lastId = wrap(from)]
             pocket.score++
-            pebbles[i].host = pocket
+            
+            let pebble
+            if (pebble = pebbles[i])
+                pebble.host = pocket
         }
 
         return lastId

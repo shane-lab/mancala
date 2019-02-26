@@ -10,7 +10,7 @@ import { Check } from '../decorators/check'
 import { Injectable, Inject } from '../decorators/injector'
 
 import { hasValueOf } from '../util/minidash'
-import delay from '../util/delay';
+import delay from '../util/delay'
 
 @Injectable()
 export class MatchService {
@@ -25,8 +25,8 @@ export class MatchService {
         this.boardService.reset(match.board)
     }
 
-    async move(match: Match, side: Symbol, pocketId: number) {
-        if (!hasValueOf(SIDES, side))
+    async move(match: Match, side: Symbol, pocketId: number, flag?: boolean = true) {
+        if (!hasValueOf(SIDES, side)) 
             throw new Error('illegal side')
         
         if (match.turn !== side)
@@ -55,7 +55,8 @@ export class MatchService {
                         const store = this.boardService.getStoreByLane(match.board, side)
     
                         // giving more visual feedback when 'stealing' opposite pebbles
-                        await delay(1000)
+                        if (flag)
+                            await delay(1000)
 
                         this.boardService.transferAll(match.board, transferedId, store.index)
                         this.boardService.transferAll(match.board, opposite.index, store.index)
@@ -69,7 +70,8 @@ export class MatchService {
 
         if (isLaneAEmpty || isLaneBEmpty) {
             // giving more visual feedback when taking remaining pebbles
-            await delay(1000)
+            if (flag)
+                await delay(1000)
 
             if (isLaneAEmpty && !isLaneBEmpty)
                 this.#transferLaneToVictor(match, SIDES.PLAYER)

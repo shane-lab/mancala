@@ -1,4 +1,4 @@
-import { Pocket } from './pocket';
+import { Pocket } from './pocket'
 
 export class Pebble {
     host: Pocket

@@ -5,6 +5,7 @@
   "main": "public/build/main.js",
   "dependencies": {
     "@babel/runtime": "^7.3.1",
+    "clone-deep": "^4.0.1",
     "light-event-bus": "^1.0.1"
   },
   "devDependencies": {

@@ -1,5 +1,5 @@
 import { Component } from '../decorators/component'
-import { Check } from '../decorators/check';
+import { Check } from '../decorators/check'
 
 import { Pebble } from '../models/pebble'
 import { STORE_A, STORE_B } from '../models/board'
@@ -81,7 +81,7 @@ export class PebbleComponent {
         const pebbleEl = this.querySelector('.pebble')
 
         // wait 1 tick 
-        setTimeout(() => dock(pebbleEl, this._findHostElement()), 1);
+        setTimeout(() => dock(pebbleEl, this._findHostElement()), 1)
     }
 
     // dirty dom lookup

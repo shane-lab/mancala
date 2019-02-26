@@ -10,11 +10,14 @@ import { Match } from '../models/match'
 import STATES from '../shared/states'
 import MODES from '../shared/modes'
 import MOVES from '../shared/moves'
+import SIDES from '../shared/sides'
 
 import { Inject } from '../decorators/injector'
 
+import { Bot } from '../ai/bot'
+
 import { hasValueOf } from '../util/minidash'
-import SIDES from '../shared/sides';
+import delay from '../util/delay'
 
 export class GameState extends BaseState {
     #board: Board
@@ -22,6 +25,7 @@ export class GameState extends BaseState {
     #match: Match
     #subscription: Subscription
     #moving = false
+    #bot: Bot
 
     @Inject(BoardService)
     boardService: BoardService
@@ -44,6 +48,8 @@ export class GameState extends BaseState {
         console.log(`playing game in mode ${this.#mode.description}`)
 
         this.matchService.start(this.#match, SIDES.PLAYER)
+
+        this.#bot = new Bot(SIDES.OPPONENT, 9)
         
         this.publisher(STATES.SWITCH_TURN, this.#match.turn)
 
@@ -53,15 +59,25 @@ export class GameState extends BaseState {
             
             this.#moving = true
 
-            const side = this.boardService.getLaneByPocket(pocketId)
+            let side = this.boardService.getLaneByPocket(pocketId)
 
             let move = MOVES.ILLEGAL
             try {
                 move = await this.matchService.move(this.#match, side, pocketId)
-
             } catch(e) { }
 
             this.publisher(STATES.POCKET_SELECTED, move)
+
+            // when the move succeeded and the turn swapped and the player is against a bot, do bot move
+            if (side === SIDES.PLAYER && move === MOVES.SUCCESS && this.#match.turn !== side && this.#bot) {
+                try {
+                    this.publisher(STATES.SWITCH_TURN, this.#match.turn)
+
+                    await this._botMove()
+
+                    side = this.#bot.side
+                } catch(e) { console.log(e) }
+            }
             
             let victor
             if (victor = this.matchService.getVictor(this.#match)) {
@@ -74,14 +90,30 @@ export class GameState extends BaseState {
                 )
 
                 this.publisher(STATES.VICTOR, victor)
-            }
-            else {
+            } else {
                 if (this.#match.turn !== side) 
                     this.publisher(STATES.SWITCH_TURN, this.#match.turn)
             }
 
             this.#moving = false
         })
+    }
+
+    async _botMove() {
+        await delay(1000)
+
+        console.log('AI STARTED THINKING')
+        
+        const id = await this.#bot.move(this.#match)
+        const move = await this.matchService.move(this.#match, this.#bot.side, id)
+        
+        console.log(`AI IS DONE THINKING, IT TOOK POCKET ${id}`)
+
+        if (move === MOVES.SUCCESS && this.#match.turn === this.#bot.side) {
+            this.publisher(STATES.AI_RE_TURN, null)
+            
+            return this._botMove()
+        }
     }
     
     async onExit() {

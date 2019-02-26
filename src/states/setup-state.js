@@ -4,20 +4,23 @@ import { State } from '../fsm/state'
 
 import { IdleState } from './idle-state'
 
+import { ToastService, ToastPosition } from '../services/toast-service'
+
 import { Board } from '../models/board'
 import { Pocket } from '../models/pocket'
 
 import { BoardComponent } from '../components/board-component'
 import { ModalComponent } from '../components/modal-component'
+import { PlayerIndicatorComponent } from '../components/player-indicator-component'
 
+import MOVES from '../shared/moves'
 import SIDES from '../shared/sides'
 import MODES from '../shared/modes'
 import STATES from '../shared/states'
-import { Inject } from '../decorators/injector';
-import { ToastService, ToastPosition } from '../services/toast-service';
-import { PlayerIndicatorComponent } from '../components/player-indicator-component';
-import delay from '../util/delay';
-import MOVES from '../shared/moves';
+
+import { Inject } from '../decorators/injector'
+
+import delay from '../util/delay'
 
 const { EventBus } = LightEventBus
 
@@ -95,6 +98,11 @@ export class SetupState extends State {
                 this.toastService.warning('You can not select this pocket', 'Wrong pocket', {
                     position: ToastPosition.BottomCenter
                 })
+        })
+        subscribe(STATES.AI_RE_TURN, _ => {
+            this.toastService.info('The AI has a consecutive turn', 'Game info', {
+                position: ToastPosition.BottomCenter
+            })
         })
 
         transitionTo(
