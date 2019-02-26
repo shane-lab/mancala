@@ -54,13 +54,13 @@ export class SetupState extends State {
                 button0.innerText = 'VS Player'
                 const button1 = document.createElement('button')
                 button1.innerText = 'VS Computer'
-                button1.disabled = true
+                // button1.disabled = true
 
                 container.appendChild(button0)
                 container.appendChild(button1)
 
                 button0.addEventListener('click', e => publish(STATES.PLAY, MODES.PVP))
-                button1.addEventListener('click', e => publish(STATES.PLAY, MODES.PVE))
+                button1.addEventListener('click', e => publish(STATES.PLAY, MODES.PVAI))
 
                 return container
             })()
