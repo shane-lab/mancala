@@ -1,5 +1,3 @@
-import clone from 'clone-deep'
-
 import { Inject } from '../decorators/injector'
 
 import { Board, STORE_A, STORE_B } from '../models/board'
@@ -37,7 +35,7 @@ class BoardCopy {
 class MatchCopy {
     board: Board
     constructor(match: Match, side?: Symbol) {
-        this.turn = side && hasValueOf(SIDES, side) ? side : match.turn // clone(match.turn)
+        this.turn = side && hasValueOf(SIDES, side) ? side : match.turn
         this.board = new BoardCopy(match.board)
     }
 }
