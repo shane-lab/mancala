@@ -50,7 +50,7 @@ export class GameState extends BaseState {
         this.matchService.start(this.#match, SIDES.PLAYER)
 
         if (this.#mode === MODES.PVAI)
-            this.#bot = new Bot(SIDES.OPPONENT, 9)
+            this.#bot = new Bot(SIDES.OPPONENT, 9, -5000, 5000)
         
         this.publisher(STATES.SWITCH_TURN, this.#match.turn)
 

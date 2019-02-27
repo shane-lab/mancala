@@ -44,6 +44,10 @@ class MatchCopy {
 
 // TODO move to service worker to split the load and create unblocking ui
 export class Bot {
+    #side: Symbol
+    #maxDepth: number
+    #min: number
+    #max: number
 
     @Inject(BoardService)
     boardService: BoardService
@@ -51,10 +55,15 @@ export class Bot {
     @Inject(MatchService)
     matchService: MatchService
 
-    constructor(side: Symbol, depth: number) {
+    constructor(side: Symbol, depth: number, alpha: number, beta: number) {
         this.side = side
         this.maxDepth = depth
-        // this.opponentSide = side === SIDES.PLAYER ? SIDES.OPPONENT : SIDES.PLAYER
+        this.min = alpha
+        this.max = beta
+    }
+
+    get side() {
+        return this.#side
     }
 
     /// get all indices of the pockets of the given side that contain any pebbles
@@ -70,102 +79,90 @@ export class Bot {
      * @return {Number} the move to select, -1 when no move is possible
      */
     async move(match: Match) {
-        const [score, move] = await this._miniMaxMove(new MatchCopy(match), this.side, this.maxDepth)
+        const [score, move] = await this.#maxMove(new MatchCopy(match), this.#side, this.#maxDepth, this.#min, this.#max)
 
         return move
     }
 
-    async _miniMaxMove(match: Match, side: Symbol, depth: number) {
-        const moves = this.legalMoves(match, side)
-        
+    async #maxMove(match: Match, side: Symbol, depth: number, alpha: number, beta: number) {
+        let bestScore = this.#min
         let bestMove = -1
-        let bestScore = Number.NEGATIVE_INFINITY
+
+        const moves = this.legalMoves(match, side)
+
+        if (depth === 0 || this.matchService.getVictor(match)) 
+            return [this.#matchScore(match, side), 0]
 
         for (const move of moves) {
-            const now = performance.now()
-            console.log(`checking pocket: ${move}`)
-            if (depth === 0) 
-                return [this._matchScore(match), move] // no depth check, return the current move
-            
-            let victor
-            if (victor = this.matchService.getVictor(match)) 
-                return [-1, -1]
+            const copy = new MatchCopy(match)
+            await this.matchService.move(copy, copy.turn, move, false)
 
-            const copy = new MatchCopy(match, side)
-            await this.matchService.move(copy, this.side, move, false)
+            let res: number[]
+            // if the move yields a new turn, check another max move
+            if (copy.turn === side)
+                res = await this.#maxMove(copy, copy.turn, depth - 1, alpha, beta)
+            else 
+                res = await this.#minMove(copy, copy.turn, depth - 1, alpha, beta)
 
-            const score = await this._minScore(copy, depth - 1)
+            const [score, next] = res
+
             if (score > bestScore) {
-                bestMove = move
                 bestScore = score
+                bestMove = move
             }
-            console.log(`op took: ${performance.now() - now}ms`)
+
+            if (score >= beta)
+                break
+            if (score > alpha)
+                alpha = score
         }
 
         return [bestScore, bestMove]
     }
 
-    async _minScore(match: Match, depth: number, ) {
-        let victor
-        if (victor = this.matchService.getVictor(match))
-            return this._matchScore(match, this.side)
+    async #minMove(match: Match, side: Symbol, depth: number, alpha: number, beta: number) {
+        let bestScore = this.#max
+        let bestMove = -1
 
-        const moves = this.legalMoves(match, match.turn)
+        const moves = this.legalMoves(match, side)
 
-        let bestScore = Number.POSITIVE_INFINITY
+        if (depth === 0 || this.matchService.getVictor(match))
+            return [this.#matchScore(match, side), -1]
+
         for (const move of moves) {
-            if (depth === 0)
-                return this._matchScore(match, this.side)
-            
             const copy = new MatchCopy(match)
             await this.matchService.move(copy, copy.turn, move, false)
 
-            const score = await this._maxScore(copy, depth - 1)
-            if (score < bestScore)
+            let res: number[]
+            // if the move yields a new turn, check another max move
+            if (copy.turn === side)
+                res = await this.#minMove(copy, copy.turn, depth - 1, alpha, beta)
+            else
+                res = await this.#maxMove(copy, copy.turn, depth - 1, alpha, beta)
+
+            const [score, next] = res
+
+            if (score < bestScore) {
                 bestScore = score
+                bestMove = move
+            }
+
+            if (score <= alpha)
+                break
+            if (score < beta)
+                beta = score
         }
 
-        // console.log(`min: {depth: ${depth}, best: ${bestScore}}`)
-
-        return bestScore
+        return [bestScore, bestMove]
     }
 
-    async _maxScore(match: Match, depth: number) {
+    #matchScore(match: Match, side: Symbol) {
         let victor
         if (victor = this.matchService.getVictor(match))
-            return this._matchScore(match, this.side)
-
-        const moves = this.legalMoves(match, match.turn)
-
-        let bestScore = Number.NEGATIVE_INFINITY
-        for (const move of moves) {
-            if (depth === 0)
-                return this._matchScore(match, this.side)
-
-            const copy = new MatchCopy(match)
-            await this.matchService.move(copy, copy.turn, move, false)
-
-            const score = await this._minScore(copy, depth - 1)
-            if (score > bestScore)
-                bestScore = score
-        }
-
-        // console.log(`max: {depth: ${depth}, best: ${bestScore}}`)
-
-        return bestScore
-    }
-
-    _matchScore(match: Match, side: Symbol) {
-        let victor
-        if (victor = this.matchService.getVictor(match)) 
             return victor === side ? Number.POSITIVE_INFINITY : Number.NEGATIVE_INFINITY
 
-        const {storeA, storeB} = match.board
+        const { storeA, storeB } = match.board
 
         return side === SIDES.PLAYER ? (storeB.score - storeA.score) : (storeA.score : storeB.score)
-    }
-
-    _opposingSide(side: Symbol) {
-        return side === SIDES.PLAYER ? SIDES.OPPONENT : SIDES.PLAYER
     }
 }
