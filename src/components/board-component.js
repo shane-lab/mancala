@@ -25,7 +25,6 @@ export class BoardComponent {
     laneComponentA: LaneComponent   // opponent lane
     laneComponentB: LaneComponent   // player lane
     pebbleComponents: PebbleComponent[] = []
-    renderPebbles = false
     #board: Board
     #clickHandler: (x: Pocket) => void
     constructor(board: Board, clickHandler: (x: Pocket) => void) {

@@ -77,7 +77,7 @@ export class GameState extends BaseState {
                     await this._botMove()
 
                     side = this.#bot.side
-                } catch(e) { console.log(e) }
+                } catch(e) { }
             }
             
             let victor
@@ -102,13 +102,9 @@ export class GameState extends BaseState {
 
     async _botMove() {
         await delay(1000)
-
-        console.log('AI STARTED THINKING')
         
         const id = await this.#bot.move(this.#match)
         const move = await this.matchService.move(this.#match, this.#bot.side, id)
-        
-        console.log(`AI IS DONE THINKING, IT TOOK POCKET ${id}`)
 
         if (move === MOVES.SUCCESS && this.#match.turn === this.#bot.side) {
             this.publisher(STATES.AI_RE_TURN, null)
