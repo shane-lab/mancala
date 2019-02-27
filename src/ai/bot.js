@@ -91,7 +91,7 @@ export class Bot {
         const moves = this.legalMoves(match, side)
 
         if (depth === 0 || this.matchService.getVictor(match)) 
-            return [this.#matchScore(match, side), 0]
+            return [this.#matchScore(match, side), -1]
 
         for (const move of moves) {
             const copy = new MatchCopy(match)
