@@ -54,10 +54,10 @@ export class Bot {
     matchService: MatchService
 
     constructor(side: Symbol, depth: number, alpha: number, beta: number) {
-        this.side = side
-        this.maxDepth = depth
-        this.min = alpha
-        this.max = beta
+        this.#side = side
+        this.#maxDepth = depth
+        this.#min = alpha
+        this.#max = beta
     }
 
     get side() {
